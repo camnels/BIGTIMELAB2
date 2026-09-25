@@ -1,0 +1,226 @@
+---
+title: 'Geog 4/6300: Lab 2'
+format:
+  html:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Spatial statistics with vector and raster data
+
+**Overview:**
+
+In this lab, you'll work with point, polygon, and raster data to investigate the distribution and environmental characteristics of trees in Georgia.
+
+You'll begin with observations of two tree species collected through the iNaturalist citizen-science platform. First, you'll use these observations to calculate the number of trees of each species found in Georgia's counties. You'll then use these counts to calculate a **location quotient (LQ)**, a measure that compares the prevalence of a species in each county with its prevalence across the state as a whole.
+
+In the second part of the lab, you'll use temperature data from the ERA5 climate reanalysis to investigate the temperatures associated with observations of the two tree species. You'll extract temperature values from a raster for each tree observation and then calculate descriptive statistics for each species.
+
+The ERA5 data we are using were obtained through the Google Earth Engine platform. More information is available at <https://github.com/communitymaplab/era5_1950-69_2014-2024>.
+
+For this lab to be marked complete, the following criteria must be met:
+
+* Your responses should show your ability to load and manipulate point and polygon vector data. (Tasks 1–3)
+* Your responses should show your ability to calculate counts and create new variables from spatial data. (Tasks 2–4)
+* Your responses should show your understanding of the location quotient as a measure of spatial concentration. (Tasks 4–5)
+* Your responses should show your ability to load raster data and extract raster values at point locations. (Tasks 6–8)
+* Your responses should show your ability to manipulate data frames and calculate summary statistics. (Tasks 9–10)
+* Your responses should demonstrate your ability to describe statistical and spatial patterns in geographic data.
+
+Before you get started, you'll need to load the following packages: `tidyverse`, `terra`, `sf`, and `tmap`. You may also want to use `knitr` for displaying tables.
+
+```{r packages}
+# Load packages here.
+```
+
+# Part 1: Mapping the distribution of trees
+
+## Where are these tree species most prevalent in Georgia?
+
+In this part of the lab, you'll use iNaturalist observations of two tree species to investigate their geographic distribution.
+
+The data folder contains a file named `gatree_obs_inat.csv`. This file contains observations of live oaks, pecan trees, flowering dogwoods, and great rhododendrons in Georgia.
+
+Your first task is to load these observations and convert them into a spatial point dataset. The observations contain longitude and latitude coordinates that you can use to create the point locations.
+
+### Task 1
+
+**Load the iNaturalist observations and convert them to an `sf` point dataset using the longitude and latitude fields. Map the observations using `tmap`, with the point colors based on the `gentype` field.**
+
+```{r task1}
+# Code goes here.
+```
+
+---
+
+Now that you have mapped the observations, you'll use the Georgia county boundaries to determine how many observations of each species occur within each county.
+
+Load the county data from:
+
+`ACSCtyData_2022ACS_simplify.gpkg`
+
+You'll then use a spatial join to determine which county contains each tree observation.
+
+### Task 2
+
+**Load the Georgia county dataset and use a spatial join to assign each tree observation to a county. Create a table showing the number of observations of each species in each county.**
+
+```{r task2}
+# Code goes here.
+```
+
+You should now have a dataset showing the number of observations of each species in each county.
+
+For example, your table might have a structure similar to:
+
+| County | Live oak | Great rhododendron |
+|---|---:|---:|
+| Clarke | 25 | 8 |
+| Oconee | 17 | 12 |
+| ... | ... | ... |
+
+Your next step is to calculate the **total number of tree observations** in each county.
+
+### Task 3
+
+**Create a county-level dataset containing the number of observations of each species and the total number of tree observations.**
+
+```{r task3}
+# Code goes here.
+```
+
+## Calculating a location quotient
+
+You will now use these counts to calculate a **location quotient (LQ)**. For this lab, we'll use it to ask:
+
+> **Is a particular tree species more prevalent among tree observations in a county than it is across Georgia as a whole?**
+
+For this lab, calculate an LQ for **live oak observations**.
+
+First, calculate the statewide proportion of observations that are live oak. Then calculate the proportion of observations that are live oak in each county. Finally, divide the county proportion by the statewide proportion.
+
+### Task 4
+
+**Calculate the location quotient for live oak observations for every Georgia county. Add the resulting LQ as a new variable in your county dataset.**
+
+```{r task4}
+# Code goes here.
+```
+
+Now map your LQ values.
+
+### Task 5
+
+**Create a map showing the location quotient for live oak observations. Describe the geographic pattern you see. Which parts of Georgia have relatively high concentrations of live oak observations? Which have relatively low concentrations?**
+
+```{r task5_map}
+# Code goes here.
+```
+
+**Your response:**
+
+{Your response goes here.}
+
+# Part 2: Trees and temperature in Georgia
+
+## What temperatures are associated with observations of each species?
+
+In the second part of the lab, you'll investigate the environmental characteristics of the four tree species.
+
+The temperature data you'll use come from the ERA5 climate reanalysis. The data provide retrospective information about atmospheric conditions across the globe.
+
+You will use the July temperature rasters from 2022–2024 to calculate a mean July temperature raster. You'll then extract the temperature associated with each tree observation.
+
+Your first step is to load one of the temperature rasters—the one for July 1, 2024—and convert the temperature from degrees Kelvin to degrees Celsius.
+
+You should see this raster in the data folder of this lab repository. Load it using the `rast` function from `terra`.
+
+### Task 6
+
+**Load the July 1, 2024 temperature raster and convert it from Kelvin to Celsius. Plot it when you are done.**
+
+```{r task6}
+# Code goes here.
+```
+
+Now load **all of the temperature rasters for July 2022–2024**.
+
+Create a list of the files in the `temp_july2022_2024` folder and load them using `rast`. Convert the values from Kelvin to Celsius.
+
+Use `nlyr()` to confirm how many raster layers you have loaded.
+
+### Task 7
+
+**Load all temperature rasters for July dates in 2022–2024, convert them from Kelvin to Celsius, and calculate the mean temperature across all of the raster layers.**
+
+```{r task7}
+# Code goes here.
+```
+
+You now have a raster representing the mean July temperature across the study period.
+
+Next, use `terra::extract()` to obtain the temperature value at the location of every tree observation.
+
+### Task 8
+
+**Extract the mean July temperature for each tree observation and add the temperature value to the tree dataset. Display the first several observations using `kable()`.**
+
+```{r task8}
+# Code goes here.
+```
+
+You can now calculate summary statistics for the two tree species.
+
+For each species, calculate:
+
+* the mean temperature
+* the standard deviation of temperature
+* the mean longitude
+* the mean latitude
+
+The mean longitude and latitude provide a simple measure of the **mean center** of the observations.
+
+### Task 9
+
+**Calculate the mean and standard deviation of temperature for each species, along with the mean longitude and latitude of their observations. Display the results using `kable()`.**
+
+```{r task9}
+# Code goes here.
+```
+
+### Task 10
+
+**What does the table tell you about the temperatures associated with observations of the two species? How do their geographic distributions compare? Are there any similarities or differences that you find interesting?**
+
+**Your response:**
+
+{Your response goes here.}
+
+# Lab challenge
+
+The data folder also includes temperature data for the **1950–1952** period.
+
+As a challenge, repeat the temperature analysis using the 1950–52 data. Calculate the mean temperature associated with each tree observation for both periods and compare the results. Then calculate the difference between the two periods for each observation. Map the resulting `CHANGE` variable and describe the geographic pattern you see.
+
+**Challenge:** _Which areas of Georgia show the largest changes in the temperatures associated with tree observations? Which trees are in areas with the greatest changes in temperature in this period?_
+
+```{r challenge}
+# Start your code here.
+```
+
+# Final submission
+
+## Disclosure of assistance
+
+Besides class materials, what other sources of assistance did you use while completing this lab? These can include input from classmates, relevant material identified through web searches (e.g., Stack Overflow), or assistance from ChatGPT or other AI tools. How did these sources support your own learning in completing the lab?
+
+{Response here.}
+
+## Lab reflection
+
+How do you feel about the work you did on this lab? Was it easy, moderate, or hard? What are the biggest things you learned by completing it?
+
+{Your response here}
