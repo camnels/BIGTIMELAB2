@@ -3,6 +3,8 @@ title: 'Geog 4/6300: Lab 2'
 format:
   html:
     toc: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -34,6 +36,12 @@ Before you get started, you'll need to load the following packages: `tidyverse`,
 
 ```{r packages}
 # Load packages here.
+
+library(tidyverse)
+library(knitr)
+library(terra)
+library(tmap)
+library(sf)
 ```
 
 # Part 1: Mapping the distribution of trees
@@ -51,7 +59,13 @@ Your first task is to load these observations and convert them into a spatial po
 **Load the iNaturalist observations and convert them to an `sf` point dataset using the longitude and latitude fields. Map the observations using `tmap`, with the point colors based on the `gentype` field.**
 
 ```{r task1}
-# Code goes here.
+trees <-read_csv("data/gatree_obs_inat.csv") %>%
+  st_as_sf(coords=c("longitude","latitude"),crs=4326)
+
+
+tm_shape(trees)+
+  tm_dots("gentype",size=0.3)
+
 ```
 
 ---
@@ -70,6 +84,21 @@ You'll then use a spatial join to determine which county contains each tree obse
 
 ```{r task2}
 # Code goes here.
+
+counties<-st_read("data/ACSCtyData_2022ACS_simplify.gpkg")
+
+countiesntrees<- trees %>%
+  st_transform(4326) %>%
+  st_join(counties %>% st_transform(4326), join = st_within) %>%
+  filter(is.na(id)==FALSE)
+
+types_per_cty <- countiesntrees %>%
+  st_set_geometry(NULL) %>%
+  group_by(gentype, cty_name) %>%
+  summarise(gentype_count=n()) %>%
+  pivot_wider(names_from="gentype",values_from="gentype_count")
+
+kable(head(types_per_cty))
 ```
 
 You should now have a dataset showing the number of observations of each species in each county.
@@ -89,7 +118,17 @@ Your next step is to calculate the **total number of tree observations** in each
 **Create a county-level dataset containing the number of observations of each species and the total number of tree observations.**
 
 ```{r task3}
-# Code goes here.
+
+obs_per_cty <- types_per_cty %>%
+  mutate(across
+         (c(Dogwood, Rhododendron, "Live oak", Pecan),
+           ~replace_na(.x, 0))) %>% 
+  group_by(cty_name) %>%
+  mutate(totalct = Dogwood+Rhododendron+Pecan+`Live oak`)
+
+kable(head(obs_per_cty))
+  
+
 ```
 
 ## Calculating a location quotient
@@ -107,7 +146,21 @@ First, calculate the statewide proportion of observations that are live oak. The
 **Calculate the location quotient for live oak observations for every Georgia county. Add the resulting LQ as a new variable in your county dataset.**
 
 ```{r task4}
-# Code goes here.
+# total trees 
+totaltrees = nrow(countiesntrees)
+liveoak = sum(obs_per_cty$`Live oak`, na.rm=TRUE) #This was where i asked chatgpt i could NOT figure out the backticks 
+lostateratio = liveoak/totaltrees #ratio of oaks overall
+
+cty_lq <- obs_per_cty %>%
+  mutate(oak_ratio = `Live oak`/totalct) %>%
+  mutate(oak_lq = oak_ratio/lostateratio) %>%
+  right_join(counties, by="cty_name") #put the geom back in
+
+cty_lq2 <- counties %>%
+  filter(st_name=="Georgia") %>% #don't want everybody 
+  left_join(obs_per_cty, by='cty_name') %>%
+  mutate(oak_ratio = `Live oak`/totalct, oak_lq = oak_ratio/lostateratio) 
+
 ```
 
 Now map your LQ values.
@@ -117,7 +170,15 @@ Now map your LQ values.
 **Create a map showing the location quotient for live oak observations. Describe the geographic pattern you see. Which parts of Georgia have relatively high concentrations of live oak observations? Which have relatively low concentrations?**
 
 ```{r task5_map}
-# Code goes here.
+
+tm_shape(cty_lq2)+
+  tm_polygons(fill="oak_lq",
+              fill.legend =tm_legend(title="LQ"))+
+  tm_title("Location Quotient of Live Oak Trees in Georgia")
+
+#how to fix the missings 
+
+
 ```
 
 **Your response:**
