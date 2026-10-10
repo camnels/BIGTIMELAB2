@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Geog 4/6300: Lab 2</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="geog4300_lab2 response template_files/libs/clipboard/clipboard.min.js"></script>
+<script src="geog4300_lab2 response template_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="geog4300_lab2 response template_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="geog4300_lab2 response template_files/libs/quarto-html/popper.min.js"></script>
+<script src="geog4300_lab2 response template_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="geog4300_lab2 response template_files/libs/quarto-html/anchor.min.js"></script>
+<link href="geog4300_lab2 response template_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="geog4300_lab2 response template_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="geog4300_lab2 response template_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="geog4300_lab2 response template_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="geog4300_lab2 response template_files/libs/bootstrap/bootstrap-917079515d91bccb85b543faf8aa8bb6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#spatial-statistics-with-vector-and-raster-data" id="toc-spatial-statistics-with-vector-and-raster-data" class="nav-link active" data-scroll-target="#spatial-statistics-with-vector-and-raster-data">Spatial statistics with vector and raster data</a></li>
+  <li><a href="#part-1-mapping-the-distribution-of-trees" id="toc-part-1-mapping-the-distribution-of-trees" class="nav-link" data-scroll-target="#part-1-mapping-the-distribution-of-trees">Part 1: Mapping the distribution of trees</a>
+  <ul class="collapse">
+  <li><a href="#where-are-these-tree-species-most-prevalent-in-georgia" id="toc-where-are-these-tree-species-most-prevalent-in-georgia" class="nav-link" data-scroll-target="#where-are-these-tree-species-most-prevalent-in-georgia">Where are these tree species most prevalent in Georgia?</a>
+  <ul class="collapse">
+  <li><a href="#task-1" id="toc-task-1" class="nav-link" data-scroll-target="#task-1">Task 1</a></li>
+  <li><a href="#task-2" id="toc-task-2" class="nav-link" data-scroll-target="#task-2">Task 2</a></li>
+  <li><a href="#task-3" id="toc-task-3" class="nav-link" data-scroll-target="#task-3">Task 3</a></li>
+  </ul></li>
+  <li><a href="#calculating-a-location-quotient" id="toc-calculating-a-location-quotient" class="nav-link" data-scroll-target="#calculating-a-location-quotient">Calculating a location quotient</a>
+  <ul class="collapse">
+  <li><a href="#task-4" id="toc-task-4" class="nav-link" data-scroll-target="#task-4">Task 4</a></li>
+  <li><a href="#task-5" id="toc-task-5" class="nav-link" data-scroll-target="#task-5">Task 5</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#part-2-trees-and-temperature-in-georgia" id="toc-part-2-trees-and-temperature-in-georgia" class="nav-link" data-scroll-target="#part-2-trees-and-temperature-in-georgia">Part 2: Trees and temperature in Georgia</a>
+  <ul class="collapse">
+  <li><a href="#what-temperatures-are-associated-with-observations-of-each-species" id="toc-what-temperatures-are-associated-with-observations-of-each-species" class="nav-link" data-scroll-target="#what-temperatures-are-associated-with-observations-of-each-species">What temperatures are associated with observations of each species?</a>
+  <ul class="collapse">
+  <li><a href="#task-6" id="toc-task-6" class="nav-link" data-scroll-target="#task-6">Task 6</a></li>
+  <li><a href="#task-7" id="toc-task-7" class="nav-link" data-scroll-target="#task-7">Task 7</a></li>
+  <li><a href="#task-8" id="toc-task-8" class="nav-link" data-scroll-target="#task-8">Task 8</a></li>
+  <li><a href="#task-9" id="toc-task-9" class="nav-link" data-scroll-target="#task-9">Task 9</a></li>
+  <li><a href="#task-10" id="toc-task-10" class="nav-link" data-scroll-target="#task-10">Task 10</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#lab-challenge" id="toc-lab-challenge" class="nav-link" data-scroll-target="#lab-challenge">Lab challenge</a>
+  <ul class="collapse">
+  <li><a href="#disclosure-of-assistance" id="toc-disclosure-of-assistance" class="nav-link" data-scroll-target="#disclosure-of-assistance">Disclosure of assistance</a></li>
+  <li><a href="#lab-reflection" id="toc-lab-reflection" class="nav-link" data-scroll-target="#lab-reflection">Lab reflection</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Geog 4/6300: Lab 2</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="spatial-statistics-with-vector-and-raster-data" class="level1">
+<h1>Spatial statistics with vector and raster data</h1>
+<p><strong>Overview:</strong></p>
+<p>In this lab, you’ll work with point, polygon, and raster data to investigate the distribution and environmental characteristics of trees in Georgia.</p>
+<p>You’ll begin with observations of two tree species collected through the iNaturalist citizen-science platform. First, you’ll use these observations to calculate the number of trees of each species found in Georgia’s counties. You’ll then use these counts to calculate a <strong>location quotient (LQ)</strong>, a measure that compares the prevalence of a species in each county with its prevalence across the state as a whole.</p>
+<p>In the second part of the lab, you’ll use temperature data from the ERA5 climate reanalysis to investigate the temperatures associated with observations of the two tree species. You’ll extract temperature values from a raster for each tree observation and then calculate descriptive statistics for each species.</p>
+<p>The ERA5 data we are using were obtained through the Google Earth Engine platform. More information is available at <a href="https://github.com/communitymaplab/era5_1950-69_2014-2024" class="uri">https://github.com/communitymaplab/era5_1950-69_2014-2024</a>.</p>
+<p>For this lab to be marked complete, the following criteria must be met:</p>
+<ul>
+<li>Your responses should show your ability to load and manipulate point and polygon vector data. (Tasks 1–3)</li>
+<li>Your responses should show your ability to calculate counts and create new variables from spatial data. (Tasks 2–4)</li>
+<li>Your responses should show your understanding of the location quotient as a measure of spatial concentration. (Tasks 4–5)</li>
+<li>Your responses should show your ability to load raster data and extract raster values at point locations. (Tasks 6–8)</li>
+<li>Your responses should show your ability to manipulate data frames and calculate summary statistics. (Tasks 9–10)</li>
+<li>Your responses should demonstrate your ability to describe statistical and spatial patterns in geographic data.</li>
+</ul>
+<p>Before you get started, you’ll need to load the following packages: <code>tidyverse</code>, <code>terra</code>, <code>sf</code>, and <code>tmap</code>. You may also want to use <code>knitr</code> for displaying tables.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages here.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>terra 1.9.50
+
+Attaching package: 'terra'
+
+The following object is masked from 'package:knitr':
+
+    spin
+
+The following object is masked from 'package:tidyr':
+
+    extract</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'stars':
+  method                  from
+  st_interpolate_aw.stars sf  </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE</code></pre>
+</div>
+</div>
+</section>
+<section id="part-1-mapping-the-distribution-of-trees" class="level1">
+<h1>Part 1: Mapping the distribution of trees</h1>
+<section id="where-are-these-tree-species-most-prevalent-in-georgia" class="level2">
+<h2 class="anchored" data-anchor-id="where-are-these-tree-species-most-prevalent-in-georgia">Where are these tree species most prevalent in Georgia?</h2>
+<p>In this part of the lab, you’ll use iNaturalist observations of two tree species to investigate their geographic distribution.</p>
+<p>The data folder contains a file named <code>gatree_obs_inat.csv</code>. This file contains observations of live oaks, pecan trees, flowering dogwoods, and great rhododendrons in Georgia.</p>
+<p>Your first task is to load these observations and convert them into a spatial point dataset. The observations contain longitude and latitude coordinates that you can use to create the point locations.</p>
+<section id="task-1" class="level3">
+<h3 class="anchored" data-anchor-id="task-1">Task 1</h3>
+<p><strong>Load the iNaturalist observations and convert them to an <code>sf</code> point dataset using the longitude and latitude fields. Map the observations using <code>tmap</code>, with the point colors based on the <code>gentype</code> field.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>trees2 <span class="ot">&lt;-</span><span class="fu">read_csv</span>(<span class="st">"data/gatree_obs_inat.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 6322 Columns: 19
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (13): uuid, observed_on_string, time_observed_at, time_zone, user_login...
+dbl   (5): id, user_id, taxon_id, longitude, latitude
+date  (1): observed_on
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>trees <span class="ot">&lt;-</span> trees2 <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords=</span><span class="fu">c</span>(<span class="st">"longitude"</span>,<span class="st">"latitude"</span>),<span class="at">crs=</span><span class="dv">4326</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(trees)<span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="st">"gentype"</span>,<span class="at">size=</span><span class="fl">0.3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="geog4300_lab2-response-template_files/figure-html/task1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+<p>Now that you have mapped the observations, you’ll use the Georgia county boundaries to determine how many observations of each species occur within each county.</p>
+<p>Load the county data from:</p>
+<p><code>ACSCtyData_2022ACS_simplify.gpkg</code></p>
+<p>You’ll then use a spatial join to determine which county contains each tree observation.</p>
+</section>
+<section id="task-2" class="level3">
+<h3 class="anchored" data-anchor-id="task-2">Task 2</h3>
+<p><strong>Load the Georgia county dataset and use a spatial join to assign each tree observation to a county. Create a table showing the number of observations of each species in each county.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code goes here.</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>counties<span class="ot">&lt;-</span><span class="fu">st_read</span>(<span class="st">"data/ACSCtyData_2022ACS_simplify.gpkg"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `ACSCtyData_2022ACS_simplify' from data source 
+  `/Users/cn51231/Documents/GitHub/BIGTIMELAB2/data/ACSCtyData_2022ACS_simplify.gpkg' 
+  using driver `GPKG'
+Simple feature collection with 3107 features and 65 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -124.7322 ymin: 24.54423 xmax: -66.96015 ymax: 49.38437
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>countiesntrees<span class="ot">&lt;-</span> trees <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_join</span>(counties <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">4326</span>), <span class="at">join =</span> st_within) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(id)<span class="sc">==</span><span class="cn">FALSE</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>types_per_cty <span class="ot">&lt;-</span> countiesntrees <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_set_geometry</span>(<span class="cn">NULL</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gentype, cty_name) <span class="sc">%&gt;%</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">gentype_count=</span><span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from=</span><span class="st">"gentype"</span>,<span class="at">values_from=</span><span class="st">"gentype_count"</span>, <span class="at">values_fill =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by gentype and cty_name.
+ℹ Output is grouped by gentype.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(gentype, cty_name))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(types_per_cty))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">cty_name</th>
+<th style="text-align: right;">Dogwood</th>
+<th style="text-align: right;">Live oak</th>
+<th style="text-align: right;">Pecan</th>
+<th style="text-align: right;">Rhododendron</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Appling County, Georgia</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Baker County, Georgia</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Baldwin County, Georgia</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Banks County, Georgia</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Barrow County, Georgia</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bartow County, Georgia</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>You should now have a dataset showing the number of observations of each species in each county.</p>
+<p>For example, your table might have a structure similar to:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>County</th>
+<th style="text-align: right;">Live oak</th>
+<th style="text-align: right;">Great rhododendron</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Clarke</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td>Oconee</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td>…</td>
+<td style="text-align: right;">…</td>
+<td style="text-align: right;">…</td>
+</tr>
+</tbody>
+</table>
+<p>Your next step is to calculate the <strong>total number of tree observations</strong> in each county.</p>
+</section>
+<section id="task-3" class="level3">
+<h3 class="anchored" data-anchor-id="task-3">Task 3</h3>
+<p><strong>Create a county-level dataset containing the number of observations of each species and the total number of tree observations.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>obs_per_cty <span class="ot">&lt;-</span> types_per_cty <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(across</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>         (<span class="fu">c</span>(Dogwood, Rhododendron, <span class="st">"Live oak"</span>, Pecan))) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cty_name) <span class="sc">%&gt;%</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">totalct =</span> Dogwood<span class="sc">+</span>Rhododendron<span class="sc">+</span>Pecan<span class="sc">+</span><span class="st">`</span><span class="at">Live oak</span><span class="st">`</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(obs_per_cty))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 11%">
+<col style="width: 13%">
+<col style="width: 8%">
+<col style="width: 19%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">cty_name</th>
+<th style="text-align: right;">Dogwood</th>
+<th style="text-align: right;">Live oak</th>
+<th style="text-align: right;">Pecan</th>
+<th style="text-align: right;">Rhododendron</th>
+<th style="text-align: right;">totalct</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Appling County, Georgia</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Baker County, Georgia</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Baldwin County, Georgia</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Banks County, Georgia</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Barrow County, Georgia</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">44</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bartow County, Georgia</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">43</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="calculating-a-location-quotient" class="level2">
+<h2 class="anchored" data-anchor-id="calculating-a-location-quotient">Calculating a location quotient</h2>
+<p>You will now use these counts to calculate a <strong>location quotient (LQ)</strong>. For this lab, we’ll use it to ask:</p>
+<blockquote class="blockquote">
+<p><strong>Is a particular tree species more prevalent among tree observations in a county than it is across Georgia as a whole?</strong></p>
+</blockquote>
+<p>For this lab, calculate an LQ for <strong>live oak observations</strong>.</p>
+<p>First, calculate the statewide proportion of observations that are live oak. Then calculate the proportion of observations that are live oak in each county. Finally, divide the county proportion by the statewide proportion.</p>
+<section id="task-4" class="level3">
+<h3 class="anchored" data-anchor-id="task-4">Task 4</h3>
+<p><strong>Calculate the location quotient for live oak observations for every Georgia county. Add the resulting LQ as a new variable in your county dataset.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># total trees </span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>totaltrees <span class="ot">=</span> <span class="fu">nrow</span>(countiesntrees)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>liveoak <span class="ot">=</span> <span class="fu">sum</span>(obs_per_cty<span class="sc">$</span><span class="st">`</span><span class="at">Live oak</span><span class="st">`</span>, <span class="at">na.rm=</span><span class="cn">TRUE</span>) <span class="co">#This was where i asked chatgpt i could NOT figure out the backticks </span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>lostateratio <span class="ot">=</span> liveoak<span class="sc">/</span>totaltrees <span class="co">#ratio of oaks overall</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>cty_lq2 <span class="ot">&lt;-</span> counties <span class="sc">%&gt;%</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(st_name<span class="sc">==</span><span class="st">"Georgia"</span>) <span class="sc">%&gt;%</span> <span class="co">#don't want everybody </span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(obs_per_cty, <span class="at">by=</span><span class="st">'cty_name'</span>) <span class="sc">%&gt;%</span> <span class="co">#put in the obs</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">oak_ratio =</span> <span class="st">`</span><span class="at">Live oak</span><span class="st">`</span><span class="sc">/</span>totalct, <span class="at">oak_lq =</span> oak_ratio<span class="sc">/</span>lostateratio) <span class="sc">%&gt;%</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">oak_lq =</span> <span class="fu">replace_na</span>(oak_lq, <span class="dv">0</span>)) <span class="co">#This is how i dealt with the NaNs </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now map your LQ values.</p>
+</section>
+<section id="task-5" class="level3">
+<h3 class="anchored" data-anchor-id="task-5">Task 5</h3>
+<p><strong>Create a map showing the location quotient for live oak observations. Describe the geographic pattern you see. Which parts of Georgia have relatively high concentrations of live oak observations? Which have relatively low concentrations?</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(cty_lq2)<span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill=</span><span class="st">"oak_lq"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span><span class="fu">tm_legend</span>(<span class="at">title=</span><span class="st">"LQ"</span>))<span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Location Quotient of Live Oak Trees in Georgia"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>[plot mode] fit legend/component: Some legend items or map compoments do not
+fit well, and are therefore rescaled.
+ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="geog4300_lab2-response-template_files/figure-html/task5_map-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Your response:</strong></p>
+<p>There’s a much higher percentage of oaks in the south/southeast part of the state than there is in the whole state. It looks like they enjoy the coast. There is a LQ of less than 1 indicating a lower percentage of oaks in most of the central and northern areas. No abnormally high oak totals north of the fall line.</p>
+</section>
+</section>
+</section>
+<section id="part-2-trees-and-temperature-in-georgia" class="level1">
+<h1>Part 2: Trees and temperature in Georgia</h1>
+<section id="what-temperatures-are-associated-with-observations-of-each-species" class="level2">
+<h2 class="anchored" data-anchor-id="what-temperatures-are-associated-with-observations-of-each-species">What temperatures are associated with observations of each species?</h2>
+<p>In the second part of the lab, you’ll investigate the environmental characteristics of the four tree species.</p>
+<p>The temperature data you’ll use come from the ERA5 climate reanalysis. The data provide retrospective information about atmospheric conditions across the globe.</p>
+<p>You will use the July temperature rasters from 2022–2024 to calculate a mean July temperature raster. You’ll then extract the temperature associated with each tree observation.</p>
+<p>Your first step is to load one of the temperature rasters—the one for July 1, 2024—and convert the temperature from degrees Kelvin to degrees Celsius.</p>
+<p>You should see this raster in the data folder of this lab repository. Load it using the <code>rast</code> function from <code>terra</code>.</p>
+<section id="task-6" class="level3">
+<h3 class="anchored" data-anchor-id="task-6">Task 6</h3>
+<p><strong>Load the July 1, 2024 temperature raster and convert it from Kelvin to Celsius. Plot it when you are done.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>julyfirst <span class="ot">&lt;-</span> (<span class="fu">rast</span>(<span class="st">"data/temp_july2022_2024/temperature_2m_2024-07-01.tif"</span>)) <span class="sc">-</span> <span class="fl">273.75</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(julyfirst)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="geog4300_lab2-response-template_files/figure-html/task6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now load <strong>all of the temperature rasters for July 2022–2024</strong>.</p>
+<p>Create a list of the files in the <code>temp_july2022_2024</code> folder and load them using <code>rast</code>. Convert the values from Kelvin to Celsius.</p>
+<p>Use <code>nlyr()</code> to confirm how many raster layers you have loaded.</p>
+</section>
+<section id="task-7" class="level3">
+<h3 class="anchored" data-anchor-id="task-7">Task 7</h3>
+<p><strong>Load all temperature rasters for July dates in 2022–2024, convert them from Kelvin to Celsius, and calculate the mean temperature across all of the raster layers.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>julyfiles <span class="ot">&lt;-</span><span class="fu">list.files</span>(<span class="st">"data/temp_july2022_2024"</span>,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">pattern=</span><span class="st">".tif"</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">full.names=</span>T)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>julies1<span class="ot">&lt;-</span>(<span class="fu">rast</span>(julyfiles))<span class="sc">-</span><span class="fl">273.15</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">nlyr</span>(julies1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 92</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>julies<span class="ot">&lt;-</span> <span class="fu">mean</span>(julies1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>You now have a raster representing the mean July temperature across the study period.</p>
+<p>Next, use <code>terra::extract()</code> to obtain the temperature value at the location of every tree observation.</p>
+</section>
+<section id="task-8" class="level3">
+<h3 class="anchored" data-anchor-id="task-8">Task 8</h3>
+<p><strong>Extract the mean July temperature for each tree observation and add the temperature value to the tree dataset. Display the first several observations using <code>kable()</code>.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#mean july temp for all the years, not that specific year, right?</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>treesinjuly <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">extract</span>(julies, countiesntrees, <span class="at">method=</span><span class="st">"bilinear"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>countiesntrees<span class="sc">$</span>temperature <span class="ot">&lt;-</span> treesinjuly[,<span class="dv">2</span>]</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>meantemptable <span class="ot">&lt;-</span> countiesntrees <span class="sc">%&gt;%</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, observed_on, cty_name, gentype, temperature) </span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(meantemptable))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">id</th>
+<th style="text-align: left;">observed_on</th>
+<th style="text-align: left;">cty_name</th>
+<th style="text-align: left;">gentype</th>
+<th style="text-align: right;">temperature</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">38491</td>
+<td style="text-align: left;">2011-11-07</td>
+<td style="text-align: left;">Clarke County, Georgia</td>
+<td style="text-align: left;">Dogwood</td>
+<td style="text-align: right;">26.65019</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">145616</td>
+<td style="text-align: left;">2012-11-09</td>
+<td style="text-align: left;">Fulton County, Georgia</td>
+<td style="text-align: left;">Dogwood</td>
+<td style="text-align: right;">26.26979</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">399515</td>
+<td style="text-align: left;">2013-09-10</td>
+<td style="text-align: left;">Hall County, Georgia</td>
+<td style="text-align: left;">Dogwood</td>
+<td style="text-align: right;">25.78132</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">618291</td>
+<td style="text-align: left;">2014-04-07</td>
+<td style="text-align: left;">Coweta County, Georgia</td>
+<td style="text-align: left;">Dogwood</td>
+<td style="text-align: right;">26.40977</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">710549</td>
+<td style="text-align: left;">2013-10-13</td>
+<td style="text-align: left;">Cobb County, Georgia</td>
+<td style="text-align: left;">Dogwood</td>
+<td style="text-align: right;">26.37995</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">751374</td>
+<td style="text-align: left;">2014-04-06</td>
+<td style="text-align: left;">Washington County, Georgia</td>
+<td style="text-align: left;">Dogwood</td>
+<td style="text-align: right;">28.14945</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>You can now calculate summary statistics for the two tree species.</p>
+<p>For each species, calculate:</p>
+<ul>
+<li>the mean temperature</li>
+<li>the standard deviation of temperature</li>
+<li>the mean longitude</li>
+<li>the mean latitude</li>
+</ul>
+<p>The mean longitude and latitude provide a simple measure of the <strong>mean center</strong> of the observations.</p>
+</section>
+<section id="task-9" class="level3">
+<h3 class="anchored" data-anchor-id="task-9">Task 9</h3>
+<p><strong>Calculate the mean and standard deviation of temperature for each species, along with the mean longitude and latitude of their observations. Display the results using <code>kable()</code>.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>treestats <span class="ot">&lt;-</span> countiesntrees <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lon=</span><span class="fu">st_coordinates</span>(geometry)[,<span class="dv">1</span>], <span class="at">lat =</span> <span class="fu">st_coordinates</span>(geometry)[,<span class="dv">2</span>]) <span class="sc">%&gt;%</span> <span class="co">#pulls back the lat/lon from the original data. probably a way to do this easier but it works for me lol </span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lat, lon, cty_name, gentype, temperature) <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gentype) <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">meantemp =</span> <span class="fu">mean</span>(temperature, <span class="at">na.rm=</span><span class="cn">TRUE</span>), <span class="at">sdtemp =</span> <span class="fu">sd</span>(temperature, <span class="at">na.rm=</span><span class="cn">TRUE</span>), <span class="at">meanlat =</span> <span class="fu">mean</span>(lat), <span class="at">meanlon =</span> <span class="fu">mean</span>(lon)) <span class="sc">%&gt;%</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>()</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co">#question here - theres 177 missing live oak temps and 5 missing pecan temps, what is the best way to go about that? na.rm for the pecan because its &lt;1%, but oak is 13%. those obs are included in the lat/lon means but not the temp means  </span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>         </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(treestats))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">gentype</th>
+<th style="text-align: right;">meantemp</th>
+<th style="text-align: right;">sdtemp</th>
+<th style="text-align: right;">meanlat</th>
+<th style="text-align: right;">meanlon</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dogwood</td>
+<td style="text-align: right;">26.26618</td>
+<td style="text-align: right;">0.8661423</td>
+<td style="text-align: right;">33.80864</td>
+<td style="text-align: right;">-84.16315</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Live oak</td>
+<td style="text-align: right;">27.88078</td>
+<td style="text-align: right;">0.2285202</td>
+<td style="text-align: right;">31.63942</td>
+<td style="text-align: right;">-81.73694</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pecan</td>
+<td style="text-align: right;">26.78590</td>
+<td style="text-align: right;">0.7075050</td>
+<td style="text-align: right;">33.23651</td>
+<td style="text-align: right;">-83.70759</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rhododendron</td>
+<td style="text-align: right;">24.35830</td>
+<td style="text-align: right;">1.0574245</td>
+<td style="text-align: right;">34.66185</td>
+<td style="text-align: right;">-83.98485</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="task-10" class="level3">
+<h3 class="anchored" data-anchor-id="task-10">Task 10</h3>
+<p><strong>What does the table tell you about the temperatures associated with observations of the two species? How do their geographic distributions compare? Are there any similarities or differences that you find interesting?</strong></p>
+<p>Oaks like the warmest temperatures! They also have the lowest latitude and easternmost longitude, which matches the location quotient pattern that we mapped earlier showing the high concentration of oaks near the coast. Rhododendrons like the coolest temperatures, but also have the highest variation with a stdev over 1 degree. The cool temps match up with a much higher mean latitude than the other trees. Dogwoods and pecans performed similarly.</p>
+</section>
+</section>
+</section>
+<section id="lab-challenge" class="level1">
+<h1>Lab challenge</h1>
+<p>The data folder also includes temperature data for the <strong>1950–1952</strong> period.</p>
+<p>As a challenge, repeat the temperature analysis using the 1950–52 data. Calculate the mean temperature associated with each tree observation for both periods and compare the results. Then calculate the difference between the two periods for each observation. Map the resulting <code>CHANGE</code> variable and describe the geographic pattern you see.</p>
+<p><strong>Challenge:</strong> <em>Which areas of Georgia show the largest changes in the temperatures associated with tree observations? Which trees are in areas with the greatest changes in temperature in this period?</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#files</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>julyfiles2 <span class="ot">&lt;-</span><span class="fu">list.files</span>(<span class="st">"data/temp_july1950_1952"</span>,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">pattern=</span><span class="st">".tif"</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">full.names=</span>T)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>julies12<span class="ot">&lt;-</span>(<span class="fu">rast</span>(julyfiles2))<span class="sc">-</span><span class="fl">273.15</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>julies2<span class="ot">&lt;-</span> <span class="fu">mean</span>(julies12)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co">#mean temp</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>treesinjuly2 <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">extract</span>(julies2, countiesntrees, <span class="at">method=</span><span class="st">"simple"</span>)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>countiesntrees2 <span class="ot">&lt;-</span> countiesntrees <span class="sc">%&gt;%</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">temperature =</span> treesinjuly2[,<span class="dv">2</span>])</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>meantemptable2 <span class="ot">&lt;-</span> countiesntrees2 <span class="sc">%&gt;%</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, observed_on, cty_name, gentype, temperature) </span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="co">#kable(head(meantemptable2))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>treestats2 <span class="ot">&lt;-</span> countiesntrees2 <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lon=</span><span class="fu">st_coordinates</span>(geometry)[,<span class="dv">1</span>], <span class="at">lat =</span> <span class="fu">st_coordinates</span>(geometry)[,<span class="dv">2</span>]) <span class="sc">%&gt;%</span> <span class="co">#pulls back the lat/lon from the original data. probably a way to do this easier but it works for me lol </span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(lat, lon, cty_name, gentype, temperature) <span class="sc">%&gt;%</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gentype) <span class="sc">%&gt;%</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">meantemp =</span> <span class="fu">mean</span>(temperature, <span class="at">na.rm=</span><span class="cn">TRUE</span>), <span class="at">sdtemp =</span> <span class="fu">sd</span>(temperature, <span class="at">na.rm=</span><span class="cn">TRUE</span>), <span class="at">meanlat =</span> <span class="fu">mean</span>(lat), <span class="at">meanlon =</span> <span class="fu">mean</span>(lon)) </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>treestats_change <span class="ot">&lt;-</span> treestats <span class="sc">%&gt;%</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a> <span class="fu">left_join</span>(treestats2, <span class="at">by=</span><span class="st">"gentype"</span>, <span class="at">suffix =</span> <span class="fu">c</span>(<span class="st">".now"</span>, <span class="st">".past"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">deltat =</span> meantemp.now <span class="sc">-</span> meantemp.past)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">#head(treestats_change)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>allmeantemps <span class="ot">&lt;-</span> countiesntrees2 <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_join</span>(countiesntrees, <span class="at">join =</span> st_intersects) </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">#kable(head(allmeantemps))</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>MOAmeantemps <span class="ot">&lt;-</span> allmeantemps <span class="sc">%&gt;%</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">deltat =</span> temperature.y<span class="sc">-</span> temperature.x) <span class="sc">%&gt;%</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(temperature.x)) <span class="sc">%&gt;%</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(cty_name.x, gentype.x, deltat) </span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co">#kable(head(MOAmeantemps))</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(MOAmeantemps) <span class="sc">+</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">color =</span> deltat)) <span class="sc">+</span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Temperature change, 1850-52 - 2022-24, at each tree observation"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="geog4300_lab2-response-template_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>bygentype <span class="ot">&lt;-</span> MOAmeantemps <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gentype.x) <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">change=</span><span class="fu">mean</span>(deltat)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>()</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(bygentype))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">gentype.x</th>
+<th style="text-align: right;">change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dogwood</td>
+<td style="text-align: right;">0.4458023</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Live oak</td>
+<td style="text-align: right;">0.7274079</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pecan</td>
+<td style="text-align: right;">0.4183245</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rhododendron</td>
+<td style="text-align: right;">0.7440271</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Spatial: Less temperature change in the general Atlanta area, extending down to the southwest. Larger temperature changes are found in the far north and coastal plain.</p>
+<p>Gentype: Rhododendrons and live oaks had the highest magnitude of change, around 0.73-0.74 degrees higher than 1850. This makes sense, as the oaks were all down by the coast and the rhododendrons were all up north! # Final submission</p>
+<section id="disclosure-of-assistance" class="level2">
+<h2 class="anchored" data-anchor-id="disclosure-of-assistance">Disclosure of assistance</h2>
+<p>Besides class materials, what other sources of assistance did you use while completing this lab? These can include input from classmates, relevant material identified through web searches (e.g., Stack Overflow), or assistance from ChatGPT or other AI tools. How did these sources support your own learning in completing the lab?</p>
+<p>I used the ?function and ChatGPT for a couple things I got caught up on. What keeps getting me is the geometry stuff, I asked chatgpt how to bring back the lat/lon for task 9 and it gave me that line that indexes the geometry column. Works, but my immediate thought is that there’s a better/more efficient way to do that. It helped with showing me how to manage the column name having a space in it (backticks, who knew)</p>
+</section>
+<section id="lab-reflection" class="level2">
+<h2 class="anchored" data-anchor-id="lab-reflection">Lab reflection</h2>
+<p>How do you feel about the work you did on this lab? Was it easy, moderate, or hard? What are the biggest things you learned by completing it?</p>
+<p>This one was harder! Joining datasets of different types together and managing them (especially when it’s the spatraster so you can’t click on the dataframe) is difficult to visualize. Learning to match climate data with land observations spatially and then perform statistical magic on them was incredibly helpful for my own research.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
