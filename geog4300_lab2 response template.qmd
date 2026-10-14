@@ -59,9 +59,10 @@ Your first task is to load these observations and convert them into a spatial po
 **Load the iNaturalist observations and convert them to an `sf` point dataset using the longitude and latitude fields. Map the observations using `tmap`, with the point colors based on the `gentype` field.**
 
 ```{r task1}
-trees <-read_csv("data/gatree_obs_inat.csv") %>%
-  st_as_sf(coords=c("longitude","latitude"),crs=4326)
+trees2 <-read_csv("data/gatree_obs_inat.csv")
 
+trees <- trees2 %>%
+  st_as_sf(coords=c("longitude","latitude"),crs=4326)
 
 tm_shape(trees)+
   tm_dots("gentype",size=0.3)
@@ -96,7 +97,7 @@ types_per_cty <- countiesntrees %>%
   st_set_geometry(NULL) %>%
   group_by(gentype, cty_name) %>%
   summarise(gentype_count=n()) %>%
-  pivot_wider(names_from="gentype",values_from="gentype_count")
+  pivot_wider(names_from="gentype",values_from="gentype_count", values_fill = 0)
 
 kable(head(types_per_cty))
 ```
@@ -121,13 +122,11 @@ Your next step is to calculate the **total number of tree observations** in each
 
 obs_per_cty <- types_per_cty %>%
   mutate(across
-         (c(Dogwood, Rhododendron, "Live oak", Pecan),
-           ~replace_na(.x, 0))) %>% 
+         (c(Dogwood, Rhododendron, "Live oak", Pecan))) %>% 
   group_by(cty_name) %>%
   mutate(totalct = Dogwood+Rhododendron+Pecan+`Live oak`)
 
 kable(head(obs_per_cty))
-  
 
 ```
 
@@ -151,15 +150,12 @@ totaltrees = nrow(countiesntrees)
 liveoak = sum(obs_per_cty$`Live oak`, na.rm=TRUE) #This was where i asked chatgpt i could NOT figure out the backticks 
 lostateratio = liveoak/totaltrees #ratio of oaks overall
 
-cty_lq <- obs_per_cty %>%
-  mutate(oak_ratio = `Live oak`/totalct) %>%
-  mutate(oak_lq = oak_ratio/lostateratio) %>%
-  right_join(counties, by="cty_name") #put the geom back in
-
 cty_lq2 <- counties %>%
   filter(st_name=="Georgia") %>% #don't want everybody 
-  left_join(obs_per_cty, by='cty_name') %>%
-  mutate(oak_ratio = `Live oak`/totalct, oak_lq = oak_ratio/lostateratio) 
+  left_join(obs_per_cty, by='cty_name') %>% #put in the obs
+  mutate(oak_ratio = `Live oak`/totalct, oak_lq = oak_ratio/lostateratio) %>%
+  mutate(oak_lq = replace_na(oak_lq, 0)) #This is how i dealt with the NaNs 
+  
 
 ```
 
@@ -176,14 +172,12 @@ tm_shape(cty_lq2)+
               fill.legend =tm_legend(title="LQ"))+
   tm_title("Location Quotient of Live Oak Trees in Georgia")
 
-#how to fix the missings 
-
 
 ```
 
 **Your response:**
 
-{Your response goes here.}
+There's a much higher percentage of oaks in the south/southeast part of the state than there is in the whole state. It looks like they enjoy the coast. There is a LQ of less than 1 indicating a lower percentage of oaks in most of the central and northern areas. No abnormally high oak totals north of the fall line. 
 
 # Part 2: Trees and temperature in Georgia
 
@@ -204,7 +198,8 @@ You should see this raster in the data folder of this lab repository. Load it us
 **Load the July 1, 2024 temperature raster and convert it from Kelvin to Celsius. Plot it when you are done.**
 
 ```{r task6}
-# Code goes here.
+julyfirst <- (rast("data/temp_july2022_2024/temperature_2m_2024-07-01.tif")) - 273.75
+plot(julyfirst)
 ```
 
 Now load **all of the temperature rasters for July 2022–2024**.
@@ -218,7 +213,15 @@ Use `nlyr()` to confirm how many raster layers you have loaded.
 **Load all temperature rasters for July dates in 2022–2024, convert them from Kelvin to Celsius, and calculate the mean temperature across all of the raster layers.**
 
 ```{r task7}
-# Code goes here.
+julyfiles <-list.files("data/temp_july2022_2024",
+                     pattern=".tif",
+                     full.names=T)
+
+julies1<-(rast(julyfiles))-273.15
+nlyr(julies1)
+
+julies<- mean(julies1)
+
 ```
 
 You now have a raster representing the mean July temperature across the study period.
@@ -230,7 +233,16 @@ Next, use `terra::extract()` to obtain the temperature value at the location of 
 **Extract the mean July temperature for each tree observation and add the temperature value to the tree dataset. Display the first several observations using `kable()`.**
 
 ```{r task8}
-# Code goes here.
+#mean july temp for all the years, not that specific year, right?
+
+treesinjuly <- terra::extract(julies, countiesntrees, method="bilinear")
+countiesntrees$temperature <- treesinjuly[,2]
+
+meantemptable <- countiesntrees %>%
+  st_drop_geometry() %>%
+  select(id, observed_on, cty_name, gentype, temperature) 
+kable(head(meantemptable))
+
 ```
 
 You can now calculate summary statistics for the two tree species.
@@ -249,16 +261,25 @@ The mean longitude and latitude provide a simple measure of the **mean center** 
 **Calculate the mean and standard deviation of temperature for each species, along with the mean longitude and latitude of their observations. Display the results using `kable()`.**
 
 ```{r task9}
-# Code goes here.
+treestats <- countiesntrees %>%
+  mutate(lon=st_coordinates(geometry)[,1], lat = st_coordinates(geometry)[,2]) %>% #pulls back the lat/lon from the original data. probably a way to do this easier but it works for me lol 
+  select(lat, lon, cty_name, gentype, temperature) %>%
+  group_by(gentype) %>%
+  summarise(meantemp = mean(temperature, na.rm=TRUE), sdtemp = sd(temperature, na.rm=TRUE), meanlat = mean(lat), meanlon = mean(lon)) %>%
+  st_drop_geometry()
+
+#question here - theres 177 missing live oak temps and 5 missing pecan temps, what is the best way to go about that? na.rm for the pecan because its <1%, but oak is 13%. those obs are included in the lat/lon means but not the temp means  
+         
+kable(head(treestats))
+
+
 ```
 
 ### Task 10
 
 **What does the table tell you about the temperatures associated with observations of the two species? How do their geographic distributions compare? Are there any similarities or differences that you find interesting?**
 
-**Your response:**
-
-{Your response goes here.}
+Oaks like the warmest temperatures! They also have the lowest latitude and easternmost longitude, which matches the location quotient pattern that we mapped earlier showing the high concentration of oaks near the coast. Rhododendrons like the coolest temperatures, but also have the highest variation with a stdev over 1 degree. The cool temps match up with a much higher mean latitude than the other trees. Dogwoods and pecans performed similarly. 
 
 # Lab challenge
 
@@ -269,19 +290,81 @@ As a challenge, repeat the temperature analysis using the 1950–52 data. Calcul
 **Challenge:** _Which areas of Georgia show the largest changes in the temperatures associated with tree observations? Which trees are in areas with the greatest changes in temperature in this period?_
 
 ```{r challenge}
-# Start your code here.
+#files
+julyfiles2 <-list.files("data/temp_july1950_1952",
+                     pattern=".tif",
+                     full.names=T)
+
+julies12<-(rast(julyfiles2))-273.15
+julies2<- mean(julies12)
+
+#mean temp
+treesinjuly2 <- terra::extract(julies2, countiesntrees, method="simple")
+
+countiesntrees2 <- countiesntrees %>%
+  mutate(temperature = treesinjuly2[,2])
+
+meantemptable2 <- countiesntrees2 %>%
+  st_drop_geometry() %>%
+  select(id, observed_on, cty_name, gentype, temperature) 
+#kable(head(meantemptable2))
+
 ```
 
+```{r}
+treestats2 <- countiesntrees2 %>%
+  mutate(lon=st_coordinates(geometry)[,1], lat = st_coordinates(geometry)[,2]) %>% #pulls back the lat/lon from the original data. probably a way to do this easier but it works for me lol 
+  select(lat, lon, cty_name, gentype, temperature) %>%
+  group_by(gentype) %>%
+  summarise(meantemp = mean(temperature, na.rm=TRUE), sdtemp = sd(temperature, na.rm=TRUE), meanlat = mean(lat), meanlon = mean(lon)) 
+  
+treestats_change <- treestats %>%
+  st_drop_geometry() %>%
+ left_join(treestats2, by="gentype", suffix = c(".now", ".past")) %>%
+  mutate(deltat = meantemp.now - meantemp.past)
+
+#head(treestats_change)
+```
+
+```{r}
+
+allmeantemps <- countiesntrees2 %>%
+  st_join(countiesntrees, join = st_intersects) 
+
+#kable(head(allmeantemps))
+
+MOAmeantemps <- allmeantemps %>%
+  mutate(deltat = temperature.y- temperature.x) %>%
+  filter(!is.na(temperature.x)) %>%
+  select(cty_name.x, gentype.x, deltat) 
+
+#kable(head(MOAmeantemps))
+
+ggplot(MOAmeantemps) +
+  geom_sf(aes(color = deltat)) +
+  labs(title = "Temperature change, 1850-52 - 2022-24, at each tree observation") 
+
+bygentype <- MOAmeantemps %>%
+  group_by(gentype.x) %>%
+  summarise(change=mean(deltat)) %>%
+  st_drop_geometry()
+
+kable(head(bygentype))
+```
+
+Spatial: Less temperature change in the general Atlanta area, extending down to the southwest. Larger temperature changes are found in the far north and coastal plain. 
+
+Gentype: Rhododendrons and live oaks had the highest magnitude of change, around 0.73-0.74 degrees higher than 1850. This makes sense, as the oaks were all down by the coast and the rhododendrons were all up north! 
 # Final submission
 
 ## Disclosure of assistance
 
 Besides class materials, what other sources of assistance did you use while completing this lab? These can include input from classmates, relevant material identified through web searches (e.g., Stack Overflow), or assistance from ChatGPT or other AI tools. How did these sources support your own learning in completing the lab?
 
-{Response here.}
+I used the ?function and ChatGPT for a couple things I got caught up on. What keeps getting me is the geometry stuff, I asked chatgpt how to bring back the lat/lon for task 9 and it gave me that line that indexes the geometry column. Works, but my immediate thought is that there's a better/more efficient way to do that. It helped with showing me how to manage the column name having a space in it (backticks, who knew) 
 
 ## Lab reflection
 
 How do you feel about the work you did on this lab? Was it easy, moderate, or hard? What are the biggest things you learned by completing it?
 
-{Your response here}
+This one was harder! Joining datasets of different types together and managing them (especially when it's the spatraster so you can't click on the dataframe) is difficult to visualize. Learning to match climate data with land observations spatially and then perform statistical magic on them was incredibly helpful for my own research. 
